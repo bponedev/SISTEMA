@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Escritórios</h2>
+
+    <a href="{{ url_for('offices.offices_form') }}">
+        <button>Novo Escritório</button>
+    </a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for o in offices %}
+        <tr>
+            <td>{{ o['id'] }}</td>
+            <td>{{ o['nome'] }}</td>
+
+            <td>
+                <a href="{{ url_for('offices.offices_edit', office_id=o['id']) }}">
+                    <span class="action-btn action-edit">Editar</span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
