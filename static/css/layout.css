@@ -1,0 +1,39 @@
+/* =========================================================
+   LAYOUT DO SISTEMA
+   Cabecalho, menu, containers
+   ========================================================= */
+
+header {
+    width: 100%;
+    background: #222;
+    color: #fff;
+    padding: 15px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.navbar {
+    background: #333;
+    padding: 10px;
+}
+
+.navbar a {
+    color: #eee;
+    margin-right: 20px;
+    font-size: 15px;
+}
+
+.navbar a:hover {
+    color: #fff;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
