@@ -1,60 +1,43 @@
-from flask import render_template, request, redirect, url_for, session
+from flask import render_template, request, redirect, url_for, flash
 from . import users_bp
-from app.db import query, execute
-from app.auth.routes import login_required
+from app.db import get_conn
 
-def admin_required():
-    return session.get("role") == "ADMIN"
 
-# LISTAR USUÁRIOS
-@users_bp.route("/")
-@login_required
-def list():
-    if not admin_required():
-        return "Acesso negado."
 
-    users = query("SELECT * FROM users ORDER BY id DESC")
-    return render_template("users/list.html", users=users)
 
-# CRIAR USUÁRIO
-@users_bp.route("/create", methods=["GET", "POST"])
-@login_required
-def create():
-    if not admin_required():
-        return "Acesso negado."
+@users_bp.route('/admin/users')
+def admin_users():
+conn = get_conn()
+c = conn.cursor()
+c.execute('SELECT id, username, full_name, role, active, created_at FROM users ORDER BY id DESC')
+rows = c.fetchall()
+conn.close()
+users = []
+for r in rows:
+users.append({'id': r[0], 'username': r[1], 'full_name': r[2], 'role': r[3], 'active': r[4]})
+return render_template('admin_users.html', users=users)
 
-    if request.method == "POST":
-        execute("""
-        INSERT INTO users (usuario, senha, role)
-        VALUES (?, ?, ?)
-        """, (
-            request.form["usuario"],
-            request.form["senha"],
-            request.form["role"]
-        ))
-        return redirect(url_for("users.list"))
 
-    return render_template("users/create.html")
 
-# EDITAR USUÁRIO
-@users_bp.route("/edit/<int:user_id>", methods=["GET", "POST"])
-@login_required
-def edit(user_id):
-    if not admin_required():
-        return "Acesso negado."
 
-    user = query("SELECT * FROM users WHERE id=?", (user_id,), one=True)
-
-    if request.method == "POST":
-        execute("""
-        UPDATE users SET usuario=?, senha=?, role=?
-        WHERE id=?
-        """, (
-            request.form["usuario"],
-            request.form["senha"],
-            request.form["role"],
-            user_id
-        ))
-        return redirect(url_for("users.list"))
-
-    return render_template("users/edit.html", user=user)
+@users_bp.route('/admin/users/create', methods=['GET', 'POST'])
+def admin_users_create():
+if request.method == 'POST':
+username = request.form.get('username')
+full_name = request.form.get('full_name')
+password = request.form.get('password')
+role = request.form.get('role', 'OPERADOR')
+conn = get_conn()
+c = conn.cursor()
+try:
+c.execute('INSERT INTO users (username, full_name, password_hash, role, active, created_at) VALUES (?,?,?,?,?,?)',
+(username, full_name, password, role, 1, None))
+conn.commit()
+flash('Usuário criado.', 'success')
+return redirect(url_for('users.admin_users'))
+except Exception as e:
+conn.rollback()
+flash('Erro: ' + str(e), 'error')
+finally:
+conn.close()
+return render_template('admin_users_create.html')
