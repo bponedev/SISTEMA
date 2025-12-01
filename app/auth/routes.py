@@ -1,42 +1,38 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from . import auth_bp
-from app.db import get_db, execute_db
-import query
-from functools import wraps
+from app.db import get_conn
 
-# Decorador de login
-def login_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if "user_id" not in session:
-            return redirect(url_for("auth.login"))
-        return f(*args, **kwargs)
-    return wrap
 
-# Login
-@auth_bp.route("/login", methods=["GET", "POST"])
+
+
+@auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == "POST":
-        usuario = request.form["usuario"]
-        senha = request.form["senha"]
+if request.method == 'POST':
+username = request.form.get('usuario') or request.form.get('username')
+password = request.form.get('senha') or request.form.get('password')
+conn = get_conn()
+c = conn.cursor()
+c.execute('SELECT id, senha, role, active FROM users WHERE usuario = ?', (username,))
+row = c.fetchone()
+conn.close()
+if not row:
+flash('Usuário inválido.', 'error')
+return render_template('login.html')
+# NOTE: in V1 passwords are hashed — adapt if you store plaintext
+stored = row[1]
+if stored == password:
+session['user_id'] = row[0]
+session['role'] = row[2]
+flash('Login efetuado.', 'success')
+return redirect(url_for('index'))
+flash('Usuário ou senha incorretos.', 'error')
+return render_template('login.html')
 
-        user = query(
-            "SELECT * FROM users WHERE usuario=? AND senha=?",
-            (usuario, senha),
-            one=True
-        )
 
-        if user:
-            session["user_id"] = user["id"]
-            session["role"] = user["role"]
-            return redirect(url_for("records.home"))
 
-        flash("Usuário ou senha inválidos", "danger")
 
-    return render_template("login.html")
-
-# Logout
-@auth_bp.route("/logout")
+@auth_bp.route('/logout')
 def logout():
-    session.clear()
-    return redirect(url_for("auth.login"))
+session.pop('user_id', None)
+flash('Desconectado.', 'info')
+return redirect(url_for('login'))
