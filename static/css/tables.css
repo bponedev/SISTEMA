@@ -1,0 +1,40 @@
+/* =========================================================
+   TABELAS DO SISTEMA
+   Listagens, resultados, admin, registros
+   ========================================================= */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table thead tr {
+    background: #444;
+    color: #fff;
+}
+
+table th, table td {
+    padding: 12px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+table tbody tr:nth-child(even) {
+    background: #f2f2f2;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: 4px;
+}
+
+.action-edit {
+    background: #ffc107;
+    color: #000;
+}
+
+.action-del {
+    background: #dc3545;
+    color: #fff;
+}
