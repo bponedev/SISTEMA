@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Editar Escritório</h2>
+
+    <form method="POST" action="{{ url_for('offices.offices_edit', office_id=office['id']) }}">
+        <label>Nome</label>
+        <input type="text" name="nome" value="{{ office['nome'] }}" required>
+
+        <button type="submit">Salvar Alterações</button>
+    </form>
+</div>
+
+{% endblock %}
