@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Novo Usuário</h2>
+
+    <form method="POST" action="{{ url_for('users.users_form') }}">
+        <label>Usuário</label>
+        <input type="text" name="usuario" required>
+
+        <label>Senha</label>
+        <input type="password" name="senha" required>
+
+        <label>Role</label>
+        <select name="role" required>
+            <option>ADMIN</option>
+            <option>USER</option>
+        </select>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+
+{% endblock %}
