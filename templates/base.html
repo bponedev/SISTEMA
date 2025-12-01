@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title if title else "Sistema" }}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tables.css') }}">
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</head>
+<body>
+
+<header>
+    <h1>Sistema de Registros</h1>
+</header>
+
+{% if session.get('user_id') %}
+<nav class="navbar">
+    <a href="{{ url_for('index') }}">Início</a>
+    <a href="{{ url_for('registros.registros_list') }}">Registros</a>
+    <a href="{{ url_for('users.users_list') }}">Usuários</a>
+    <a href="{{ url_for('offices.offices_list') }}">Escritórios</a>
+    <a href="{{ url_for('logout') }}">Sair</a>
+</nav>
+{% endif %}
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
