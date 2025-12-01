@@ -1,38 +1,40 @@
-from flask import render_template, request, redirect, url_for, flash, session
-from . import auth_bp
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from app.db import get_conn
+from werkzeug.security import check_password_hash
 
+auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
-
-
-@auth_bp.route('/login', methods=['GET', 'POST'])
+# ===============================================================
+# LOGIN
+# ===============================================================
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-if request.method == 'POST':
-username = request.form.get('usuario') or request.form.get('username')
-password = request.form.get('senha') or request.form.get('password')
-conn = get_conn()
-c = conn.cursor()
-c.execute('SELECT id, senha, role, active FROM users WHERE usuario = ?', (username,))
-row = c.fetchone()
-conn.close()
-if not row:
-flash('Usuário inválido.', 'error')
-return render_template('login.html')
-# NOTE: in V1 passwords are hashed — adapt if you store plaintext
-stored = row[1]
-if stored == password:
-session['user_id'] = row[0]
-session['role'] = row[2]
-flash('Login efetuado.', 'success')
-return redirect(url_for('index'))
-flash('Usuário ou senha incorretos.', 'error')
-return render_template('login.html')
+    if request.method == "POST":
+        usuario = request.form.get("usuario")
+        senha = request.form.get("senha")
+
+        conn = get_conn()
+        cur = conn.cursor()
+
+        cur.execute("SELECT id, usuario, senha FROM usuarios WHERE usuario = ?", (usuario,))
+        user = cur.fetchone()
+
+        if user and check_password_hash(user[2], senha):
+            session["usuario_id"] = user[0]
+            session["usuario_nome"] = user[1]
+            flash("Login realizado com sucesso!", "success")
+            return redirect(url_for("users.dashboard"))
+        else:
+            flash("Usuário ou senha inválidos", "danger")
+
+    return render_template("auth/login.html")
 
 
-
-
-@auth_bp.route('/logout')
+# ===============================================================
+# LOGOUT
+# ===============================================================
+@auth_bp.route("/logout")
 def logout():
-session.pop('user_id', None)
-flash('Desconectado.', 'info')
-return redirect(url_for('login'))
+    session.clear()
+    flash("Você saiu da conta.", "info")
+    return redirect(url_for("auth.login"))
