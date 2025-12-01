@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Editar Usuário</h2>
+
+    <form method="POST" action="{{ url_for('users.users_edit', user_id=user['id']) }}">
+        <label>Usuário</label>
+        <input type="text" name="usuario" value="{{ user['usuario'] }}" required>
+
+        <label>Nova Senha (opcional)</label>
+        <input type="password" name="senha">
+
+        <label>Role</label>
+        <select name="role">
+            <option {% if user['role']=="ADMIN" %}selected{% endif %}>ADMIN</option>
+            <option {% if user['role']=="USER" %}selected{% endif %}>USER</option>
+        </select>
+
+        <button type="submit">Salvar Alterações</button>
+    </form>
+</div>
+
+{% endblock %}
