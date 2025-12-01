@@ -1,34 +1,34 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from . import offices_bp
-from app.db import query, execute
-from app.auth.routes import login_required
+from app.db import get_conn
 
-# LISTAR
-@offices_bp.route("/")
-@login_required
-def list():
-    offices = query("SELECT * FROM offices ORDER BY nome ASC")
-    return render_template("offices/list.html", offices=offices)
 
-# CRIAR
-@offices_bp.route("/create", methods=["GET", "POST"])
-@login_required
-def create():
-    if request.method == "POST":
-        execute("INSERT INTO offices (nome) VALUES (?)",
-                (request.form["nome"],))
-        return redirect(url_for("offices.list"))
-    return render_template("offices/create.html")
 
-# EDITAR
-@offices_bp.route("/edit/<int:office_id>", methods=["GET", "POST"])
-@login_required
-def edit(office_id):
-    office = query("SELECT * FROM offices WHERE id=?", (office_id,), one=True)
 
-    if request.method == "POST":
-        execute("UPDATE offices SET nome=? WHERE id=?",
-                (request.form["nome"], office_id))
-        return redirect(url_for("offices.list"))
+@offices_bp.route('/offices')
+def offices_list():
+conn = get_conn()
+c = conn.cursor()
+c.execute('SELECT office_key, display_name FROM offices ORDER BY display_name')
+rows = c.fetchall()
+conn.close()
+offices = [{'key': r[0], 'display': r[1]} for r in rows]
+return render_template('offices.html', offices=offices)
 
-    return render_template("offices/edit.html", office=office)
+
+
+
+@offices_bp.route('/offices/create', methods=['POST'])
+def offices_create():
+name = request.form.get('office_name')
+if not name:
+flash('Nome inválido.', 'error')
+return redirect(url_for('offices.offices_list'))
+key = name.strip().upper().replace(' ', '_')
+conn = get_conn()
+c = conn.cursor()
+c.execute('INSERT OR IGNORE INTO offices (office_key, display_name) VALUES (?, ?)', (key, name.upper()))
+conn.commit()
+conn.close()
+flash('Escritório criado.', 'success')
+return redirect(url_for('offices.offices_list'))
