@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Novo Registro</h2>
+
+    <form method="POST" action="{{ url_for('registros.registros_form') }}">
+        <label>Cliente</label>
+        <input type="text" name="cliente" required>
+
+        <label>Serviço</label>
+        <input type="text" name="servico" required>
+
+        <label>Data</label>
+        <input type="date" name="data" required>
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+
+{% endblock %}
