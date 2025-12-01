@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Bem-vindo, {{ session.get('usuario') }}!</h2>
+
+    <p>Use o menu acima para navegar pelo sistema.</p>
+</div>
+
+{% endblock %}
