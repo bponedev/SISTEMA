@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="card">
+    <h2>Usuários</h2>
+
+    <a href="{{ url_for('users.users_form') }}">
+        <button>Novo Usuário</button>
+    </a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuário</th>
+            <th>Role</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ u['id'] }}</td>
+            <td>{{ u['usuario'] }}</td>
+            <td>{{ u['role'] }}</td>
+
+            <td>
+                <a href="{{ url_for('users.users_edit', user_id=u['id']) }}">
+                    <span class="action-btn action-edit">Editar</span>
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
