@@ -1,6 +1,7 @@
-from flask import render_template, request, redirect, url_for, session, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from . import auth_bp
-from app.db import query
+from app.db import get_db, execute_db
+import query
 from functools import wraps
 
 # Decorador de login
