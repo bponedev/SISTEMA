@@ -18,13 +18,14 @@
 </header>
 
 {% if session.get('user_id') %}
-<nav class="navbar">
-    <a href="{{ url_for('index') }}">Início</a>
-    <a href="{{ url_for('registros.registros_list') }}">Registros</a>
+<nav>
+    <a href="{{ url_for('auth.login') }}">Login</a>
     <a href="{{ url_for('users.users_list') }}">Usuários</a>
     <a href="{{ url_for('offices.offices_list') }}">Escritórios</a>
-    <a href="{{ url_for('logout') }}">Sair</a>
+    <a href="{{ url_for('records.registros_list') }}">Registros</a>
+    <a href="{{ url_for('pdf.export_pdf') }}">Exportar PDF</a>
 </nav>
+
 {% endif %}
 
 <div class="container">
