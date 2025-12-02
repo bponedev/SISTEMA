@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, flash
 from . import users_bp
 from app.db import get_conn
 
+users_bp = Blueprint("users", __name__, url_prefix="/users", template_folder="../templates")
 
 
 
