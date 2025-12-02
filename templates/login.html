@@ -1,22 +1,16 @@
 {% extends "base.html" %}
-{% block content %}
+{% block conteudo %}
 
-<div class="card">
-    <h2>Acesso ao Sistema</h2>
+<h2>Login</h2>
 
-    <form method="POST" action="{{ url_for('login') }}">
-        <label>Usuário</label>
-        <input type="text" name="usuario" required>
+<form method="POST">
+    <input type="text" name="email" placeholder="Email">
+    <input type="password" name="senha" placeholder="Senha">
+    <button type="submit">Entrar</button>
+</form>
 
-        <label>Senha</label>
-        <input type="password" id="senha" name="senha" required>
-
-        <button type="button" id="btnToggle" onclick="togglePassword('senha','btnToggle')">Mostrar</button>
-
-        <button type="submit">Entrar</button>
-    </form>
-</div>
-
-<script src="{{ url_for('static', filename='js/password_toggle.js') }}"></script>
+{% if erro %}
+<p style="color:red;">Credenciais incorretas.</p>
+{% endif %}
 
 {% endblock %}
