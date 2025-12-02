@@ -10,15 +10,15 @@ from .records.routes import records_bp
 from .pdf.routes import pdf_bp
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="templates", static_folder="../static")
     app.config["SECRET_KEY"] = "CHAVE-MUITO-SECRETA"
     app.config["DB_PATH"] = os.path.join(os.getcwd(), "database.db")
 
-    # Inicializa banco de dados
+    # Importante: banco init APÓS app criado
     with app.app_context():
         init_db()
 
-    # Registra todos os blueprints
+    # Registro de blueprints (sem prefixo mesmo)
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
     app.register_blueprint(offices_bp)
