@@ -1,17 +1,39 @@
 import sqlite3
-from flask import g, current_app
 
-def get_db():
-    if "db" not in g:
-        g.db = sqlite3.connect(
-            current_app.config["DB_PATH"],
-            detect_types=sqlite3.PARSE_DECLTYPES,
-            check_same_thread=False
-        )
-        g.db.row_factory = sqlite3.Row
-    return g.db
+def get_conn():
+    return sqlite3.connect("database.db")
 
 def init_db():
-    db = get_db()
-    with current_app.open_resource("schema.sql") as f:
-        db.executescript(f.read().decode("utf-8"))
+    conn = get_conn()
+    cur = conn.cursor()
+
+    # tabela usuários
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            senha TEXT NOT NULL
+        );
+    """)
+
+    # cria usuário admin se não existir
+    cur.execute("SELECT * FROM users WHERE email = 'admin@admin.com'")
+    if not cur.fetchone():
+        cur.execute(
+            "INSERT INTO users (nome, email, senha) VALUES (?, ?, ?)",
+            ("Administrador", "admin@admin.com", "admin")
+        )
+
+    # tabela registros
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS registros (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            titulo TEXT NOT NULL,
+            descricao TEXT,
+            data TEXT
+        );
+    """)
+
+    conn.commit()
+    conn.close()
