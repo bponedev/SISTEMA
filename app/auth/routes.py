@@ -1,8 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from app.db import get_conn
-from werkzeug.security import check_password_hash
+from flask import Blueprint, render_template, request, redirect, url_for
+# from app.db import get_conn
+# from werkzeug.security import check_password_hash
 
-auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+auth_bp = Blueprint("auth", __name__, url_prefix="/auth", template_folder="../templates")
+
+# suas rotas continuam iguais
+
+
 
 # ===============================================================
 # LOGIN
