@@ -2,6 +2,7 @@ from flask import render_template, request, redirect, url_for, flash
 from . import offices_bp
 from app.db import get_conn
 
+offices_bp = Blueprint("offices", __name__, url_prefix="/offices", template_folder="../templates")
 
 
 
