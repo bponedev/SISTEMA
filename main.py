@@ -1,27 +1,7 @@
-from flask import Flask
-import os
+from app import create_app
 
-# Importar blueprints
-from app.auth.routes import auth_bp
-from app.users.routes import users_bp
-from app.offices.routes import offices_bp
-from app.records.routes import records_bp
-from app.pdf.routes import pdf_bp
+app = create_app()
 
-from app.db import init_db
+if __name__ == "__main__":
+    app.run(debug=True)
 
-# Instância principal do Flask
-app = Flask(__name__)
-app.config["SECRET_KEY"] = "CHAVE-MUITO-SECRETA"
-app.config["DB_PATH"] = os.path.join(os.getcwd(), "database.db")
-
-# Inicializar o banco
-with app.app_context():
-    init_db()
-
-# Registrar blueprints
-app.register_blueprint(auth_bp)
-app.register_blueprint(users_bp)
-app.register_blueprint(offices_bp)
-app.register_blueprint(records_bp)
-app.register_blueprint(pdf_bp)
