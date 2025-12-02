@@ -4,6 +4,7 @@ from reportlab.pdfgen import canvas
 import io
 from app.db import get_conn
 
+pdf_bp = Blueprint("pdf", __name__, url_prefix="/pdf", template_folder="../templates")
 
 
 
